@@ -1,6 +1,6 @@
 package project;
 
-/* 882fc3c0de99f947b6cd5ed354b75dc594822c41b798c955*/
+/* 1cdae810482dbbc9611e661baa3708579280f1911131e448*/
 
 /* fce05bd04eae113f8743956921b88738 */
 
@@ -1148,7 +1148,18 @@ public static void showImage(BufferedImage anImage){
     return;
 	
 	}
-	
+
+	public static void main(String[] args){
+		
+		String key = "1cdae810482dbbc9611e661baa3708579280f1911131e448";
+		byte[] output = new byte[24];
+		for (int i = 0; i < 48; i = i + 2)
+			output[i/2] = (byte) ((Character.digit(key.charAt(i), 16) << 4) + Character.digit(key.charAt(i+1), 16));
+		AES test = new AES(output);
+		
+		
+	}
+
 }
 
 class MyCanvas extends JComponent{

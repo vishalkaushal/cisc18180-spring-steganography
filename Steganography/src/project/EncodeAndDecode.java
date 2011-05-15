@@ -2,6 +2,8 @@ package project;
 
 /* 0df4cdd217c14575575c155e4a4ce45d3aed9ceb9ccce132*/
 
+/* fce05bd04eae113f8743956921b88738 */
+
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
@@ -87,10 +89,8 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 			messageData[i] = (int) message.charAt(i);
 		}
 		/* Converts each message character to an integer. */
-		for (int k: messageData){
-			System.out.println(k);
-		}
-		messageData = encryption(messageData,anAES);
+		/*
+		messageData = encryption(messageData,anAES);*/
 		/* Encrypts the message. */
 		for (int j = 0; j < width; j+= 1){
 			/* Controls movement through the image 
@@ -134,6 +134,8 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 					/* Changes the Color of the current pixel
 				   	so that a character of the message is
 				   	held within it. */
+					System.out.println(messageData[(j*height)+i-1]);
+					System.out.println(new Color(encodedImage.getRGB(minX + j, minY + i)));
 				}
 			}
 		}
@@ -398,7 +400,6 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 	
 	public static int[] decryption(int[] encrypted,AES anAES){
 		
-		System.out.println(encrypted.length % 16);
 		/**
 		 * Holds the decrypted information representing the secret message or image.
 		 */
@@ -532,7 +533,7 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 		 * Holds the key for decryption.
 		 */
 		byte[] key = new byte[password.length()/2];
-		for(int i = 0; i < key.length; i += 2){
+		for(int i = 0; i < 48; i += 2){
 			key[i/2] = (byte) ((Character.digit(password.charAt(i), 16) << 4) + Character.digit(password.charAt(i+1), 16));
 		}
 		/* Gets the byte equivalent of the given password. */
@@ -632,12 +633,19 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 					/* Gets the integers representing the character in the current pixel. */
 					if((currentPixel[0] == 4) && (currentPixel[1] == 2) && (currentPixel[2] == 3)){
 						/* Occurs when the end code 423 is found. */
-						messageNumbers = decryption(getPortion(messageNumbers,0,((j * height) + i - 1)),anAES);
-						/* Decrypts the integers representing the message. */
-						for (int k: messageNumbers){
-							System.out.println(k);
+						/**
+						 * Combines 3 digits in messageNumbers into a single int. 
+						 */
+						int[] combinedMessage = new int[(j * height) + i - 1];
+						for (int k = 0; k < combinedMessage.length; k +=1 ){
+							combinedMessage[k] = digitsToInt(getPortion(messageNumbers,(3 * k),3 * (k + 1)));
 						}
-						message = convertToText(messageNumbers);
+						for (byte b: convertToBytes(combinedMessage)){
+							System.out.print(b + ", ");
+						}
+						combinedMessage = decryption(combinedMessage,anAES);
+						/* Decrypts the integers representing the message. */
+						message = convertToText(combinedMessage);
 						/* Converts the integers representing the hidden message
 						   to a string. */
 						try{
@@ -665,9 +673,9 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 						return;
 					}
 					else{
-						messageNumbers[(3*((j*width)+i-1))] = currentPixel[0];
-						messageNumbers[(3*((j*width)+i-1))+1] = currentPixel[1];
-						messageNumbers[(3*((j*width)+i-1))+2] = currentPixel[2];
+						messageNumbers[(3*((j*height)+i-1))] = currentPixel[0];
+						messageNumbers[(3*((j*height)+i-1))+1] = currentPixel[1];
+						messageNumbers[(3*((j*height)+i-1))+2] = currentPixel[2];
 						/* Adds the integers representing the character in the
 						   current pixel to the array of integers representing
 						   the entire message. */
@@ -811,15 +819,8 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 		 * Hidden message.
 		 */
 		String message = "";
-		/**
-		 * Integers representing the current character in the hidden message.
-		 */
-		int[] characterNumbers = new int[3];
-		for(int i = 0; i < messageNumbers.length/3; i += 1){
-			characterNumbers[0] = messageNumbers[(3*i)];
-			characterNumbers[1] = messageNumbers[(3*i)+1];
-			characterNumbers[2] = messageNumbers[(3*i)+2];
-			message = message.concat(Character.toString((char) digitsToInt(characterNumbers)));
+		for(int i = 0; i < messageNumbers.length; i += 1){
+			message = message.concat(Character.toString((char) (messageNumbers[i])));
 			/* Adds the current character to the end of the message. */
 		}
 		return message;

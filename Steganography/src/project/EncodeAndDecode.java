@@ -1,6 +1,6 @@
 package project;
 
-/* 0df4cdd217c14575575c155e4a4ce45d3aed9ceb9ccce132*/
+/* 882fc3c0de99f947b6cd5ed354b75dc594822c41b798c955*/
 
 /* fce05bd04eae113f8743956921b88738 */
 
@@ -640,6 +640,10 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 						for (int k = 0; k < combinedMessage.length; k +=1 ){
 							combinedMessage[k] = digitsToInt(getPortion(messageNumbers,(3 * k),3 * (k + 1)));
 						}
+						for (int k: combinedMessage){
+							System.out.println(k + ", ");
+						}
+						System.out.println();
 						for (byte b: convertToBytes(combinedMessage)){
 							System.out.print(b + ", ");
 						}

@@ -391,10 +391,10 @@ public static TwoReturn encodeText(String original,String writeTo,String message
 		/**
 		 * Holds the key for decryption.
 		 */
-		byte[] key = new byte[password.length()/2];
-		for(int i = 0; i < 48; i += 2){
-			key[i/2] = (byte) ((Character.digit(password.charAt(i), 16) << 4) + Character.digit(password.charAt(i+1), 16));
-		}
+		//byte[] key = new byte[password.length()/2];
+		//for(int i = 0; i < 48; i += 2){
+			//key[i/2] = (byte) ((Character.digit(password.charAt(i), 16) << 4) + Character.digit(password.charAt(i+1), 16));
+		//}
 		/* Gets the byte equivalent of the given password. */
 		/**
 		 * Holds the hidden message.

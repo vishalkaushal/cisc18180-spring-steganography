@@ -10,11 +10,13 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +33,7 @@ public class TextTab extends Activity{
 	EditText editText2;
 	String writeTo;
 	ImageView imageView;
+	Uri targetUri;
 	
 	
 	@Override
@@ -71,8 +74,24 @@ public class TextTab extends Activity{
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
-		Uri targetUri = data.getData();
-		textTargetUri.setText(targetUri.toString());
+		targetUri = data.getData();
+		textTargetUri.setText(getRealPath(targetUri));
+	}
+	
+	// And to convert the image URI to the direct file system path of the image file
+	public String getRealPath(Uri contentUri) {
+
+	        // can post image
+	        String [] proj={MediaStore.Images.Media.DATA};
+	        Cursor cursor = managedQuery( contentUri,
+	                        proj, // Which columns to return
+	                        null,       // WHERE clause; which rows to return (all rows)
+	                        null,       // WHERE clause selection arguments (none)
+	                        null); // Order-by clause (ascending by name)
+	        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+	        cursor.moveToFirst();
+
+	        return cursor.getString(column_index);
 	}
 	
 	public class EncodeAndDecodeTask extends AsyncTask<Void, Void, Void>{

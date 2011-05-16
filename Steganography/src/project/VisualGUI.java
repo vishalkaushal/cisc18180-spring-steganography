@@ -395,7 +395,7 @@ public class VisualGUI extends JFrame {
 	private JScrollPane getEncodeSecretPicturePane() {
 		if (encodeSecretPicturePane == null) {
 			encodeSecretPicturePane = new JScrollPane();
-			encodeSecretPicturePane.setBounds(new Rectangle(1, 307, 346, 248));
+			encodeSecretPicturePane.setBounds(new Rectangle(1, 307, 348, 248));
 		}
 		return encodeSecretPicturePane;
 	}

@@ -1089,15 +1089,8 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 		/**
 		 * Used to display the given image.
 		 */
-		JFrame frame = new JFrame("Drawing Frame");
-	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    /**
-	     * Used to display the given image.
-	     */
+		JFrame frame = new JFrame("Result");
 	    MyCanvas canvas = new MyCanvas(anImage);
-	    /**
-	     * Used to display the given image.
-	     */
 	    JPanel panel = new JPanel();
 	    panel.add(canvas);
 	    panel.add(new JTextArea(AES.arrayToString(anAES.key)));
@@ -1120,8 +1113,7 @@ public static void showImage(BufferedImage anImage){
 	/**
 	 * Used to display the given image.
 	 */
-	JFrame frame = new JFrame("Drawing Frame");
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	JFrame frame = new JFrame("Result");
     MyCanvas canvas = new MyCanvas(anImage);
     frame.getContentPane().add(canvas);
     frame.setSize(anImage.getWidth(),anImage.getHeight());

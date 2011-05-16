@@ -1,8 +1,5 @@
 package com.example.Steganography;
-import java.io.BufferedWriter;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.OutputStream;
 import android.graphics.Color;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -89,6 +86,7 @@ public static TwoReturn encodeText(String original,String writeTo,String message
 					try{
 						FileOutputStream output = new FileOutputStream(writeTo);
 						encodedImage.compress(Bitmap.CompressFormat.PNG,0,output);
+						output.close();
 					}
 					catch (Exception e){
 						System.out.println(e);
@@ -205,6 +203,7 @@ public static TwoReturn encodeText(String original,String writeTo,String message
 					try{
 						FileOutputStream output = new FileOutputStream(writeTo);
 						placeToHide.compress(Bitmap.CompressFormat.PNG,0,output);
+						output.close();
 					}
 					catch(Exception e){
 						System.out.println(e);
@@ -377,7 +376,6 @@ public static TwoReturn encodeText(String original,String writeTo,String message
 	 */
 	
 	public static String decodeText(String encoded,String password){
-		
 		
 		/**
 		 * The image containing the hidden message or image.
@@ -626,6 +624,7 @@ public static TwoReturn encodeText(String original,String writeTo,String message
 			FileOutputStream output = new FileOutputStream(writeTo);
 			hiddenImage.compress(Bitmap.CompressFormat.PNG,0,output);
 			/* Writes and displays the hidden image. */
+			output.close();
 		}
 		catch(Exception e){
 			System.out.println(e);

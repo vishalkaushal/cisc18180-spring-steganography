@@ -430,7 +430,7 @@ public static TwoReturn encodeText(String original,String writeTo,String message
 					currentPixel = getPixelDigits(encodedImage.getPixel(j,i));
 					/* Gets the integers representing the character in the current pixel. */
 					if((currentPixel[0] == 4) && (currentPixel[1] == 2) && (currentPixel[2] == 3)){
-						/* Occurs when the end code 423 is found. */
+					/* Occurs when the end code 423 is found. */
 						/**
 						 * Combines 3 digits in messageNumbers into a single int. 
 						 */

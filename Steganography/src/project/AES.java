@@ -61,7 +61,7 @@ public class AES {
 	public static void main(String[] args){
 		byte[] testText = new byte[16];
 		for (int i = 0; i < testText.length; i++)
-			testText[i] = (byte) ((i+3) * 5);
+			testText[i] = (byte) (Math.random() * 255);
 		long startTime = System.currentTimeMillis();
 		AES test = new AES();
 		System.out.println("Time to make instance of AES: " + (System.currentTimeMillis() - startTime) + "ms");

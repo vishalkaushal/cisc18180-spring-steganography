@@ -34,8 +34,10 @@ public class PictureTab extends Activity{
 		setContentView(R.layout.picturetab);
 		Button buttonLoadImage = (Button)findViewById(R.id.button1);
 		textTargetUri1 = (TextView)findViewById(R.id.textView3);
+		/* Encode in. */
 		Button buttonLoadImage2 = (Button)findViewById(R.id.button2);
 		textTargetUri2 = (TextView)findViewById(R.id.textView4);
+		/* Encode this. */
 		Button buttonGo = (Button)findViewById(R.id.button3);
 		radioGroup = (RadioGroup)findViewById(R.id.radioGroup1);
 		context = this;

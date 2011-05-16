@@ -1,5 +1,6 @@
 package com.example.Steganography;
 import java.io.FileOutputStream;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Color;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,10 +24,13 @@ public class EncodeAndDecode{
 	
 public static TwoReturn encodeText(String original,String writeTo,String message){
 		
+		
 		/**
 		 * Holds the image to be encoded into.
 		 */
-		Bitmap encodedImage = (BitmapFactory.decodeFile(original)).copy(Bitmap.Config.RGB_565, true);
+		Bitmap immutable = BitmapFactory.decodeFile(original);
+		Bitmap encodedImage = immutable.copy(Bitmap.Config.ARGB_8888, true);
+		
 		/* Gets a Bitmap from the given File. */
 		/**
 		 * Indicates how much the encoded image must be scaled up.

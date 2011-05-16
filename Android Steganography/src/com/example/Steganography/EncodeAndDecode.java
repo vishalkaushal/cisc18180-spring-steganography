@@ -31,7 +31,7 @@ public static TwoReturn encodeText(String original,String writeTo,String message
 		Bitmap immutable = BitmapFactory.decodeFile(original);
 		Bitmap encodedImage = immutable.copy(Bitmap.Config.ARGB_8888, true);
 		immutable.recycle();
-		
+
 		/* Gets a Bitmap from the given File. */
 		/**
 		 * Indicates how much the encoded image must be scaled up.

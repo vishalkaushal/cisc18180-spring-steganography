@@ -8,11 +8,13 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -21,6 +23,7 @@ public class TextTab extends Activity{
 	TextView textTargetUri;
 	RadioGroup radioGroup;
 	ProgressDialog pd;
+	EditText editText;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,7 @@ public class TextTab extends Activity{
 		textTargetUri = (TextView)findViewById(R.id.textView3);
 		Button buttonGo = (Button)findViewById(R.id.button3);
 		radioGroup = (RadioGroup)findViewById(R.id.radioGroup1);
+		editText = (EditText)findViewById(R.id.editText1);
 		
 		buttonLoadImage.setOnClickListener(new Button.OnClickListener(){
 
@@ -62,25 +66,28 @@ public class TextTab extends Activity{
 	
 	public class EncodeAndDecodeTask extends AsyncTask<Void, Void, Void>{
 
+		byte[] key;
+		Bitmap image;
+		String message;
+		
 		protected void onPreExecute(){
 			pd = ProgressDialog.show(TextTab.this, "Working..", "Working on your image.", true, false);
 		}
 		@Override
 		protected Void doInBackground(Void... params) {
+			TwoReturn get;
 			if (radioGroup.getCheckedRadioButtonId() == 0){
-				//Add the encode call here
+				get = EncodeAndDecode.encodeText(textTargetUri.getText(), writeTo, editText.getText());
+				key = (byte[]) get.second;
+				image = (Bitmap) get.first;
 			}
 			else if (radioGroup.getCheckedRadioButtonId() == 1){
-				//Add the decode call here
+				get = EncodeAndDecode.decodeText(textTargetUri.getText(), password);
+				message = (String) get.first;
 			}
-			int count = 0;
-			double test = 0;
-			for(int i = 0; i < 10000000; i++)
-				count++;
-				test = 2 * count;
 			return null;
 		}
-		protected void onPostExecute(Void unused){
+		protected void onPostExecute(Void useless){
 			pd.dismiss();
 			final AlertDialog alertDialog = new AlertDialog.Builder(TextTab.this).create();
 			alertDialog.setMessage("Done!");

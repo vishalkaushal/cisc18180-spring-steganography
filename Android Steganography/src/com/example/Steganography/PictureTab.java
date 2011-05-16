@@ -86,25 +86,29 @@ public class PictureTab extends Activity{
 
 	public class EncodeAndDecodeTask extends AsyncTask<Void, Void, Void>{
 
+		byte[] key;
+		Bitmap image;
+		Bitmap image2;
+		
 		protected void onPreExecute(){
 			pd = ProgressDialog.show(PictureTab.this, "Working..", "Working on your image.", true, false);
 		}
+	
 		@Override
 		protected Void doInBackground(Void... params) {
+			TwoReturn get;
 			if (radioGroup.getCheckedRadioButtonId() == 0){
-				//Add the encode call here
+				get = EncodeAndDecode.encodePicture(textTargetUri2.getText(), textTargetUri1.getText(), writeTo;
+				image = (Bitmap)get.first;
+				key = (byte[])get.second;
 			}
 			else if (radioGroup.getCheckedRadioButtonId() == 1){
-				//Add the decode call here
+				get = EncodeAndDecode.decodeImage(textTargetUri1.getText(), writeTo, password);
+				image2 = (Bitmap)get.first;
 			}
-			int count = 0;
-			double test = 0;
-			for(int i = 0; i < 10000000; i++)
-				count++;
-				test = 2 * count;
 			return null;
 		}
-		protected void onPostExecute(Void unused){
+		protected void onPostExecute(Void useless){
 			pd.dismiss();
 			final AlertDialog alertDialog = new AlertDialog.Builder(PictureTab.this).create();
 			alertDialog.setMessage("Done!");

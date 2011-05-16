@@ -75,7 +75,10 @@ public class TextTab extends Activity{
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		targetUri = data.getData();
-		textTargetUri.setText(getRealPath(targetUri));
+		if (targetUri.toString().charAt(0) == 'c')
+			textTargetUri.setText(getRealPath(targetUri));
+		else
+			textTargetUri.setText(targetUri.getPath());
 	}
 	
 	// And to convert the image URI to the direct file system path of the image file

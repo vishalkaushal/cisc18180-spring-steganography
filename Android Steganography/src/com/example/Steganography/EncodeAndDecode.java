@@ -438,7 +438,7 @@ public static TwoReturn encodeText(String original,String writeTo,String message
 						for (int k = 0; k < combinedMessage.length; k +=1 ){
 							combinedMessage[k] = digitsToInt(getPortion(messageNumbers,(3 * k),3 * (k + 1)));
 						}
-						combinedMessage = convertToInt(AES.decrypt(key,convertToBytes(combinedMessage)));
+						//combinedMessage = convertToInt(AES.decrypt(key,convertToBytes(combinedMessage)));
 						/* Decrypts the integers representing the message. */
 						message = convertToText(combinedMessage);
 						/* Converts the integers representing the hidden message

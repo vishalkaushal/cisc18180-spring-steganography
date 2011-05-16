@@ -1,9 +1,5 @@
 package project;
 
-/* 1cdae810482dbbc9611e661baa3708579280f1911131e448*/
-
-/* fce05bd04eae113f8743956921b88738 */
-
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
@@ -89,8 +85,7 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 			messageData[i] = (int) message.charAt(i);
 		}
 		/* Converts each message character to an integer. */
-		/*
-		messageData = encryption(messageData,anAES);*/
+		messageData = encryption(messageData,anAES);
 		/* Encrypts the message. */
 		for (int j = 0; j < width; j+= 1){
 			/* Controls movement through the image 
@@ -134,8 +129,6 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 					/* Changes the Color of the current pixel
 				   	so that a character of the message is
 				   	held within it. */
-					System.out.println(messageData[(j*height)+i-1]);
-					System.out.println(new Color(encodedImage.getRGB(minX + j, minY + i)));
 				}
 			}
 		}
@@ -362,11 +355,13 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 					}
 					/* Encrypts 16 bytes of the given integer array. */
 				}
+				else{
+					return encrypted;
+				}
 			}
 			else{
 				try{
 					encryptedBytes = anAES.encrypt(convertToBytes(getPortion(hiddenData,(16 * i),(16 * (i + 1)))));
-					System.out.println(AES.arrayToString(encryptedBytes));
 				}
 				catch(Exception e){
 					System.out.println(e);
@@ -374,13 +369,11 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 				/* Encrypts 16 bytes of the given integer array. */
 			}
 			for(int j = 0; j < encryptedBytes.length; j += 1){
-				if ((hiddenData.length % 16) != 0){
-					if(encryptedBytes[j] >= 0){
-						encrypted[(i * 16) + j] = (int) encryptedBytes[j];
-					}
-					else{
-						encrypted[(i * 16 + j)] = (int) (encryptedBytes[j]) + 256;
-					}
+				if(encryptedBytes[j] >= 0){
+					encrypted[(i * 16) + j] = (int) encryptedBytes[j];
+				}
+				else{
+					encrypted[(i * 16 + j)] = (int) (encryptedBytes[j]) + 256;
 				}
 			}
 			/* Adds the 16 encrypted bytes to the larger array holding all the
@@ -640,35 +633,24 @@ public static void encodeText(File original,File writeTo,String message,AES anAE
 						for (int k = 0; k < combinedMessage.length; k +=1 ){
 							combinedMessage[k] = digitsToInt(getPortion(messageNumbers,(3 * k),3 * (k + 1)));
 						}
-						for (int k: combinedMessage){
-							System.out.println(k + ", ");
-						}
-						System.out.println();
-						for (byte b: convertToBytes(combinedMessage)){
-							System.out.print(b + ", ");
-						}
 						combinedMessage = decryption(combinedMessage,anAES);
 						/* Decrypts the integers representing the message. */
 						message = convertToText(combinedMessage);
 						/* Converts the integers representing the hidden message
 						   to a string. */
 						try{
-							System.out.println(message);
-							/*
 							BufferedWriter output = new BufferedWriter(new FileWriter(writeTo));
 							output.write(message);
-							output.close();*/
+							output.close();
 							/* Writes the hidden message to a text file. */
 							/**
 							 * Used to display the hidden message. 
 							 */
-							/*
 							JFrame frame = new JFrame("Drawing Frame");
 						    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 						    frame.getContentPane().add(new TextArea(message));
-						    frame.getContentPane().add(new TextArea(AES.arrayToString(anAES.key)));
-						    frame.setSize(400,400);
-						    frame.setVisible(true);*/
+						    frame.setSize(400,200);
+						    frame.setVisible(true);
 						    /* Displays the hidden message in a text area. */
 						}
 						catch (Exception e){
@@ -1147,17 +1129,6 @@ public static void showImage(BufferedImage anImage){
     /* Displays the given image. */
     return;
 	
-	}
-
-	public static void main(String[] args){
-		
-		String key = "1cdae810482dbbc9611e661baa3708579280f1911131e448";
-		byte[] output = new byte[24];
-		for (int i = 0; i < 48; i = i + 2)
-			output[i/2] = (byte) ((Character.digit(key.charAt(i), 16) << 4) + Character.digit(key.charAt(i+1), 16));
-		AES test = new AES(output);
-		
-		
 	}
 
 }

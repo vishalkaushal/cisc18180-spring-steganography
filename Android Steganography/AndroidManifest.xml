@@ -20,5 +20,11 @@
 		<activity android:name="com.example.Steganography.PictureTab"
                   android:label="@string/app_name">
 		</activity>
+		<activity android:name="com.example.Steganography.AES"
+                  android:label="@string/app_name">
+		</activity>
+		<activity android:name="com.example.Steganography.EncodeAndDecode"
+                  android:label="@string/app_name">
+		</activity>
     </application>
 </manifest>

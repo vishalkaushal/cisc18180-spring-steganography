@@ -1,5 +1,7 @@
 package com.example.Steganography;
 
+import java.io.File;
+
 import com.example.Steganography.R;
 import com.example.Steganography.PictureTab.EncodeAndDecodeTask;
 
@@ -12,6 +14,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +27,9 @@ public class TextTab extends Activity{
 	RadioGroup radioGroup;
 	ProgressDialog pd;
 	EditText editText;
+	EditText editText2;
+	String writeTo;
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,7 +42,8 @@ public class TextTab extends Activity{
 		Button buttonGo = (Button)findViewById(R.id.button3);
 		radioGroup = (RadioGroup)findViewById(R.id.radioGroup1);
 		editText = (EditText)findViewById(R.id.editText1);
-		
+		editText2 = (EditText)findViewById(R.id.editText2);
+		writeTo = new File(Environment.DIRECTORY_PICTURES + File.separator + "encoded.png").toString();
 		buttonLoadImage.setOnClickListener(new Button.OnClickListener(){
 
 			@Override
@@ -77,13 +84,12 @@ public class TextTab extends Activity{
 		protected Void doInBackground(Void... params) {
 			TwoReturn get;
 			if (radioGroup.getCheckedRadioButtonId() == 0){
-				get = EncodeAndDecode.encodeText(textTargetUri.getText(), writeTo, editText.getText());
+				get = EncodeAndDecode.encodeText(textTargetUri.getText().toString(), writeTo, editText.getText().toString());
 				key = (byte[]) get.second;
 				image = (Bitmap) get.first;
 			}
 			else if (radioGroup.getCheckedRadioButtonId() == 1){
-				get = EncodeAndDecode.decodeText(textTargetUri.getText(), password);
-				message = (String) get.first;
+				message = EncodeAndDecode.decodeText(textTargetUri.getText().toString(), editText2.getText().toString());
 			}
 			return null;
 		}

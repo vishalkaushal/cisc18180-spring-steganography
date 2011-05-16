@@ -1,5 +1,7 @@
 package com.example.Steganography;
 
+import java.io.File;
+
 import com.example.Steganography.R;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,12 +13,14 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.PopupWindow;
@@ -27,6 +31,9 @@ public class PictureTab extends Activity{
 	ProgressDialog pd;
 	RadioGroup radioGroup;
 	Context context;
+	EditText editText;
+	String writeTo;
+	String saveTo;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +48,9 @@ public class PictureTab extends Activity{
 		Button buttonGo = (Button)findViewById(R.id.button3);
 		radioGroup = (RadioGroup)findViewById(R.id.radioGroup1);
 		context = this;
+		editText = (EditText)findViewById(R.id.editText1);
+		writeTo = new File(Environment.DIRECTORY_PICTURES + File.separator + "encoded.png").toString();
+		saveTo = new File(Environment.DIRECTORY_PICTURES + File.separator + "secret.png").toString();
 		
 		buttonLoadImage.setOnClickListener(new Button.OnClickListener(){
 
@@ -98,13 +108,12 @@ public class PictureTab extends Activity{
 		protected Void doInBackground(Void... params) {
 			TwoReturn get;
 			if (radioGroup.getCheckedRadioButtonId() == 0){
-				get = EncodeAndDecode.encodePicture(textTargetUri2.getText(), textTargetUri1.getText(), writeTo;
+				get = EncodeAndDecode.encodePicture(textTargetUri2.getText().toString(), textTargetUri1.getText().toString(), writeTo);
 				image = (Bitmap)get.first;
 				key = (byte[])get.second;
 			}
 			else if (radioGroup.getCheckedRadioButtonId() == 1){
-				get = EncodeAndDecode.decodeImage(textTargetUri1.getText(), writeTo, password);
-				image2 = (Bitmap)get.first;
+				image2 = EncodeAndDecode.decodeImage(textTargetUri1.getText().toString(), saveTo, editText.getText().toString());
 			}
 			return null;
 		}

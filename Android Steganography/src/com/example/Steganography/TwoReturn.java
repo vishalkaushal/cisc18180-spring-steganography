@@ -10,4 +10,14 @@ public class TwoReturn {
 		second = b;
 	}
 	
+	public static String clipEnd(String input){
+		String output = "";
+		for(int i = input.length() - 1; i > 0; i -= 1){
+			if (input.charAt(i) == '/'){
+				output = input.substring(0, i + 1);
+			}
+		}
+		return (output + "encoded");
+	}
+	
 }

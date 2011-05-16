@@ -7,6 +7,8 @@
     <TextView android:text="(No Image Selected)" android:id="@+id/textView3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingBottom= "20sp"></TextView>
     <TextView android:text="Secret Text" android:id="@+id/textView2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold"></TextView>
     <EditText android:text="Enter A Secret Message" android:layout_height="wrap_content" android:id="@+id/editText1" android:layout_width="match_parent"></EditText>
+    <TextView android:text="TextView" android:id="@+id/textView4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingTop= "20sp"></TextView>
+    <EditText android:layout_width="match_parent" android:text="EditText" android:layout_height="wrap_content" android:id="@+id/editText2"></EditText>
     <RadioGroup android:id="@+id/radioGroup1" android:layout_width="wrap_content" android:layout_height="wrap_content">
         <RadioButton android:layout_width="wrap_content" android:text="Encode" android:id="@+id/radio0" android:layout_height="wrap_content" android:checked="true"></RadioButton>
         <RadioButton android:layout_width="wrap_content" android:text="Decode" android:id="@+id/radio1" android:layout_height="wrap_content"></RadioButton>

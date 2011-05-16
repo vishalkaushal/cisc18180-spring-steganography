@@ -1,3 +1,4 @@
+package com.example.Steganography;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -728,9 +729,16 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 	public static Bitmap rebuildImage(int[] pixels,int width,int height,String writeTo){
 		
 		/**
+		 * Ints representing the colors of the pixels in the hidden image.
+		 */
+		int[] color  = new int[pixels.length/3];
+		for (int i = 0; i < color.length; i += 1){
+			color[i] = Color.rgb(pixels[(3 * i)],pixels[(3 * i) + 1],pixels[(3 * i) + 2]);
+		}
+		/**
 		 * Hidden image.
 		 */
-		Bitmap hiddenImage = 
+		Bitmap hiddenImage = Bitmap.createBitmap(color,width,height,Bitmap.Config.RGB_565);
 		try{
 			FileOutputStream output = new FileOutputStream(writeTo);
 			hiddenImage.compress(Bitmap.CompressFormat.PNG,0,output);
@@ -750,21 +758,15 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 	 * @return Hidden code in the current pixel.
 	 */
 	
-	public static int getHiddenInt(Color pixelColor){
-		
-		/*
-		 * Example:
-		 * getHiddenInt(new Color(131,142,203))
-		 * return == 123
-		 */
+	public static int getHiddenInt(int pixelColor){
 		
 		/**
 		 * Holds the digits of the hidden code in the current pixel. 
 		 */
 		int[] digits = new int[3];
-		digits[0] = intToDigits(pixelColor.getRed())[2];
-		digits[1] = intToDigits(pixelColor.getGreen())[2];
-		digits[2] = intToDigits(pixelColor.getBlue())[2];
+		digits[0] = intToDigits(Color.red(pixelColor))[2];
+		digits[1] = intToDigits(Color.green(pixelColor))[2];
+		digits[2] = intToDigits(Color.blue(pixelColor))[2];
 		return digitsToInt(digits);
 		
 	}
@@ -777,19 +779,19 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 	 * @return Scaled up image.
 	 */
 	
-	public static BufferedImage scaleUp(BufferedImage original,int scaleFactor){
+	public static Bitmap scaleUp(Bitmap original,int scaleFactor){
 		
 		/**
-		 * Scaled up image.
+		 * Colors of the pixels 
 		 */
-		BufferedImage scaledUp = new BufferedImage(original.getWidth() * scaleFactor,original.getHeight() * scaleFactor, BufferedImage.TYPE_INT_RGB);
+		int[] color = new int[scaleFactor * scaleFactor * original.getWidth() * original.getHeight()];
 		for (int i = 0; i < original.getHeight(); i += 1){
 			/* Controls vertical movement through the image. */
 			for (int j = 0; j < original.getWidth(); j += 1){
 				/* Controls horizontal movement through the image. */
 				for (int k = 0; k < scaleFactor; k += 1){
 					for (int l = 0; l < scaleFactor; l += 1){
-						scaledUp.setRGB((j*scaleFactor)+k,(i*scaleFactor)+l,original.getRGB(j,i));
+						color[(((i * scaleFactor) + k) * original.getWidth()) + (j * scaleFactor) + l] = original.getPixel(j,i);
 					}
 				}
 				/* Converts a (scaleFactor * width) x (scaleFactor * height) area of 
@@ -797,7 +799,7 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 				   image. */
 			}
 		}
-		return scaledUp;
+		return Bitmap.createBitmap(color,scaleFactor * original.getWidth(),scaleFactor * original.getHeight(),Bitmap.Config.RGB_565);
 		
 	}
 	
@@ -809,26 +811,20 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 	 * @return Given Color with the given number inside of it.
 	 */
 	
-	public static Color changeColor(Color currentColor,int inputNumber){
-		
-		/*
-		 * Example:
-		 * changeColor(Color(133,144,155),236)
-		 * return == Color(132,143,156)
-		 */
+	public static int changeColor(int currentColor,int inputNumber){
 		
 		/**
 		 * Red component of the given color.
 		 */
-		int[] red = intToDigits(currentColor.getRed());
+		int[] red = intToDigits(Color.red(currentColor));
 		/**
 		 * Green component of the given color.
 		 */
-		int[] green = intToDigits(currentColor.getGreen());
+		int[] green = intToDigits(Color.green(currentColor));
 		/**
 		 * Blue component of the given color.
 		 */
-		int[] blue = intToDigits(currentColor.getBlue());
+		int[] blue = intToDigits(Color.blue(currentColor));
 		/**
 		 * Digits of the given number.
 		 */
@@ -901,7 +897,7 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 		   number as the last digit of the red component
 		   of the pixel. */
 		
-		return new Color(digitsToInt(red),digitsToInt(green),
+		return Color.rgb(digitsToInt(red),digitsToInt(green),
 				digitsToInt(blue));
 		
 	}
@@ -972,88 +968,5 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 		return (digits[0] * 100) + (digits[1] * 10) + digits[2];
 		
 	}
-	
-	/**
-	 * Displays the given image and the encryption key.
-	 * 
-	 * @param anImage Image to be displayed.
-	 * @param anAES Object used for Encryption.
-	 */
-	public static void showImage(BufferedImage anImage,AES anAES){
 
-		/**
-		 * Used to display the given image.
-		 */
-		JFrame frame = new JFrame("Drawing Frame");
-	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    /**
-	     * Used to display the given image.
-	     */
-	    MyCanvas canvas = new MyCanvas(anImage);
-	    /**
-	     * Used to display the given image.
-	     */
-	    JPanel panel = new JPanel();
-	    panel.add(canvas);
-	    panel.add(new JTextArea(AES.arrayToString(anAES.key)));
-	    panel.setLayout(new GridLayout());
-	    frame.getContentPane().add(panel);
-	    frame.setSize(anImage.getWidth() + 500,anImage.getHeight() + 100);
-	    frame.setVisible(true);
-	    /* Displays the given image. */
-	    return;
-		
-	}
-
-/**
- * Displays the given image.
- * 
- * @param anImage Image to be displayed.
- */
-public static void showImage(BufferedImage anImage){
-
-	/**
-	 * Used to display the given image.
-	 */
-	JFrame frame = new JFrame("Drawing Frame");
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    MyCanvas canvas = new MyCanvas(anImage);
-    frame.getContentPane().add(canvas);
-    frame.setSize(anImage.getWidth(),anImage.getHeight());
-    frame.setVisible(true);
-    /* Displays the given image. */
-    return;
-	
-	}
-
-}
-
-class MyCanvas extends JComponent{
-	
-	BufferedImage image;
-	
-	/**
-	 * Constructor for the MyCanvas class.
-	 * 
-	 * @param anImage Image to be displayed.
-	 */
-	
-	public MyCanvas(BufferedImage anImage){
-		
-		image = anImage;
-		
-	}
-	
-	public void paint(Graphics g){
-	
-		Graphics2D g2d = (Graphics2D) g;
-		try{
-			g2d.drawImage(image,null,1,1);
-		}
-		catch(Exception e){
-			System.out.println(e);
-		}
-		
-	}
-	
 }

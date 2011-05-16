@@ -14,4 +14,5 @@
         <RadioButton android:layout_width="wrap_content" android:text="Decode" android:id="@+id/radio1" android:layout_height="wrap_content"></RadioButton>
     </RadioGroup>
     <Button android:text="Go!" android:id="@+id/button3" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    <ImageView android:src="@drawable/icon" android:layout_height="wrap_content" android:id="@+id/imageView1" android:layout_width="match_parent"></ImageView>
 </LinearLayout>

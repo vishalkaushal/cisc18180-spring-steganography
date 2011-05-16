@@ -49,8 +49,8 @@ public class PictureTab extends Activity{
 		radioGroup = (RadioGroup)findViewById(R.id.radioGroup1);
 		context = this;
 		editText = (EditText)findViewById(R.id.editText1);
-		writeTo = new File(Environment.DIRECTORY_PICTURES + File.separator + "encoded.png").toString();
-		saveTo = new File(Environment.DIRECTORY_PICTURES + File.separator + "secret.png").toString();
+		writeTo = new File(Environment.getExternalStorageDirectory() + File.separator + "encoded.png").toString();
+		saveTo = new File(Environment.getExternalStorageDirectory() + File.separator + "secret.png").toString();
 		
 		buttonLoadImage.setOnClickListener(new Button.OnClickListener(){
 

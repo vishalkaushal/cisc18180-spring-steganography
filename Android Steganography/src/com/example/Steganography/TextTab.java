@@ -18,6 +18,7 @@ import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -29,6 +30,7 @@ public class TextTab extends Activity{
 	EditText editText;
 	EditText editText2;
 	String writeTo;
+	ImageView imageView;
 	
 	
 	@Override
@@ -43,7 +45,9 @@ public class TextTab extends Activity{
 		radioGroup = (RadioGroup)findViewById(R.id.radioGroup1);
 		editText = (EditText)findViewById(R.id.editText1);
 		editText2 = (EditText)findViewById(R.id.editText2);
-		writeTo = new File(Environment.DIRECTORY_PICTURES + File.separator + "encoded.png").toString();
+		writeTo = new File(Environment.getExternalStorageDirectory() + File.separator + "encoded.png").toString();
+		imageView = (ImageView)findViewById(R.id.imageView1);
+		
 		buttonLoadImage.setOnClickListener(new Button.OnClickListener(){
 
 			@Override
@@ -83,10 +87,11 @@ public class TextTab extends Activity{
 		@Override
 		protected Void doInBackground(Void... params) {
 			TwoReturn get;
-			if (radioGroup.getCheckedRadioButtonId() == 0){
+			if (radioGroup.getCheckedRadioButtonId() == (R.id.radio0)){
 				get = EncodeAndDecode.encodeText(textTargetUri.getText().toString(), writeTo, editText.getText().toString());
 				key = (byte[]) get.second;
 				image = (Bitmap) get.first;
+				imageView.setImageBitmap(image);
 			}
 			else if (radioGroup.getCheckedRadioButtonId() == 1){
 				message = EncodeAndDecode.decodeText(textTargetUri.getText().toString(), editText2.getText().toString());
@@ -96,7 +101,7 @@ public class TextTab extends Activity{
 		protected void onPostExecute(Void useless){
 			pd.dismiss();
 			final AlertDialog alertDialog = new AlertDialog.Builder(TextTab.this).create();
-			alertDialog.setMessage("Done!");
+			alertDialog.setMessage(writeTo);
 			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
 			      public void onClick(DialogInterface dialog, int which) {
 			    	 // alertDialog.dismiss();

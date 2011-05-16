@@ -22,10 +22,9 @@ public class EncodeAndDecode{
 	 * @param original Pathway of the file containing the image where the text will be hidden.
 	 * @param writeTo Pathway of the file where the new image should be written to.
 	 * @param message Text to be hidden in the image.
-	 * @param anAES Object used for Encryption.
 	 */
 	
-public static Bitmap encodeText(String original,String writeTo,String message,AES anAES){
+public static TwoReturn encodeText(String original,String writeTo,String message){
 		
 		/**
 		 * Holds the image to be encoded into.
@@ -60,8 +59,9 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 		for (int i = 0; i < messageData.length; i += 1){
 			messageData[i] = (int) message.charAt(i);
 		}
+		byte[] key = AES.generateKey();
 		/* Converts each message character to an integer. */
-		messageData = encryption(messageData,anAES);
+		messageData = convertToInt(AES.encrypt(key,convertToBytes(messageData)));
 		/* Encrypts the message. */
 		for (int j = 0; j < width; j+= 1){
 			/* Controls movement through the image 
@@ -94,7 +94,7 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 						System.out.println(e);
 					}
 					/* Writes encoded image to a file and displays it. */
-					return encodedImage;
+					return new TwoReturn(encodedImage,key);
 				}
 				else{
 					encodedImage.setPixel(j,i,changeColor(encodedImage.getPixel(
@@ -105,7 +105,7 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 				}
 			}
 		}
-		return encodedImage;
+		return null;
 		
 	}
 
@@ -117,10 +117,9 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 	 * @param hideThis Pathway of the file containing image to be hidden.
 	 * @param hideIn Pathway of the file containing image that will contain other image.
 	 * @param writeTo Pathway of the file where the new image should be written to.
-	 * @param anAES Object used for Encryption.
 	 */
 
-	public static Bitmap encodePicture(String hideThis,String hideIn,String writeTo,AES anAES){
+	public static TwoReturn encodePicture(String hideThis,String hideIn,String writeTo){
 	
 		/**
 		 * Holds image to be hidden in another image.
@@ -171,7 +170,8 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 				imagePixels[3 * ((j * imageHeight) + i) + 2] = currentPixelData[2];
 			}
 		}
-		imagePixels = encryption(imagePixels,anAES);
+		byte[] key = AES.generateKey();
+		imagePixels = convertToInt(AES.encrypt(key,convertToBytes(imagePixels)));
 		/* Encrypts the image to be hidden. */
 		/**
 		 * Width of the image where the other will be hidden.
@@ -210,7 +210,7 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 						System.out.println(e);
 					}
 					/* Writes the new image to a File and displays it. */
-					return placeToHide;
+					return new TwoReturn(placeToHide,key);
 				}
 				else{
 					placeToHide.setPixel(j,i,changeColor(placeToHide.getPixel(j,i),imagePixels[(j * placeHeight) + i - 2]));
@@ -219,7 +219,7 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 				   image in a pixel of the other image. */
 			}
 		}
-		return placeToHide;
+		return null;
 		
 	}
 	
@@ -242,126 +242,7 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 		return pixelData;
 		
 	}
-	
-	/**
-	 * Encrypts the information representing the secret message or image.
-	 * 
-	 * @param hiddenData Numbers representing the hidden .
-	 * @param anAES Object used for Encryption.
-	 * @return Encrypted representation of the hiddenData of the image to be hidden.
-	 */
-	
-	public static int[] encryption(int[] hiddenData,AES anAES){
-		
-		/**
-		 * Contains the encrypted information representing the hiddenData of the image to be hidden.
-		 */
-		int[] encrypted = null;
-		if ((hiddenData.length % 16) == 0){
-			encrypted = new int[hiddenData.length];
-		}
-		else{
-			encrypted = new int[hiddenData.length + (16 - (hiddenData.length % 16))];
-		}
-		/* Encryption occurs 16 bytes at a time. Thus, the total number of encrypted bytes
-		   must be a multiple of 16. */
-		/**
-		 * Temporarily holds encrypted bytes before they are added to the larger array.
-		 * 
-		 * Encryption occurs 16 bytes as a time. 
-		 */
-		byte[] encryptedBytes = new byte[16];
-		for (int i = 0; i <= (hiddenData.length/16); i += 1){
-			if((i == (hiddenData.length/16))){
-				if(hiddenData.length % 16 != 0){
-					/**
-					 * Holds the last of the pixel data to be encrypted.
-					 */
-					byte[] lastPortion = convertToBytes(getPortion(hiddenData,(16 * i),((16 * i) + hiddenData.length % 16)));
-					for (int j = 0; j < lastPortion.length; j += 1){
-						encryptedBytes[j] = lastPortion[j];
-					}
-					/* Adds the last of the integer array to the byte array to be encrypted.  */
-					for (int j = (hiddenData.length % 16); j < 16; j += 1){
-						encryptedBytes[j] = (byte) ' ';
-					}
-					/* If the number of elements in the given integer array is not a
-				   	multiple of 16, the extra bytes needed to reach 16 for the last
-				   	part of encryption are added as the byte equivalent of blank
-				   	spaces. */
-					try{
-						encryptedBytes = anAES.encrypt(encryptedBytes);
-					}
-					catch(Exception e){
-						System.out.println(e);
-					}
-					/* Encrypts 16 bytes of the given integer array. */
-				}
-				else{
-					return encrypted;
-				}
-			}
-			else{
-				try{
-					encryptedBytes = anAES.encrypt(convertToBytes(getPortion(hiddenData,(16 * i),(16 * (i + 1)))));
-				}
-				catch(Exception e){
-					System.out.println(e);
-				}
-				/* Encrypts 16 bytes of the given integer array. */
-			}
-			for(int j = 0; j < encryptedBytes.length; j += 1){
-				if(encryptedBytes[j] >= 0){
-					encrypted[(i * 16) + j] = (int) encryptedBytes[j];
-				}
-				else{
-					encrypted[(i * 16 + j)] = (int) (encryptedBytes[j]) + 256;
-				}
-			}
-			/* Adds the 16 encrypted bytes to the larger array holding all the
-			   encrypted. */
-		}
-		return encrypted;
-		
-	}
 
-	/**
-	 * Decrypts the information representing the secret message or image.
-	 * 
-	 * @param encrypted Encrypted information representing the secret message or image.
-	 * @param anAES Object used for Decryption.
-	 * @return Decrypted information representing the secret message or image.
-	 */
-	
-	public static int[] decryption(int[] encrypted,AES anAES){
-		
-		/**
-		 * Holds the decrypted information representing the secret message or image.
-		 */
-		int[] decrypted = new int[encrypted.length];
-		/**
-		 * Temporarily holds decrypted bytes before they are added to the larger array. 
-		 *
-		 *  Decryption occurs 16 bytes at a time.
-		 */
-		byte[] decryptedBytes = new byte[16];
-		for (int i = 0; i < (decrypted.length/16); i += 1){
-			decryptedBytes = anAES.decrypt(convertToBytes(getPortion(encrypted,(16*i),(16*(i+1)))));
-			/* Decrypts 16 bytes of the secret message or image. */
-			for (int j = 0; j < 16; j += 1){
-				if (decryptedBytes[j] >= 0){
-					decrypted[(16 * i) + j] = (int) decryptedBytes[j];
-				}
-				else{
-					decrypted[(16 * i) + j] = (int) (decryptedBytes[j]) + 256;
-				}
-			}
-			/* Adds the 16 decrypted bytes to the larger array of all the decrypted information. */
-		}
-		return decrypted;
-		
-	}
-	
 	/**
 	 * Converts an int array to a byte array.
 	 * 
@@ -379,6 +260,26 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 			bytes[i] = (byte) ints[i];
 		}
 		return bytes;
+		
+	}
+	
+	/**
+	 * Converts a byte array to an int array.
+	 * 
+	 * @param bytes An array of bytes.
+	 * @return Int equivalent of the given byte array.
+	 */
+	
+	public static int[] convertToInt(byte[] bytes){
+
+		/**
+		 * Int equivalent of the given byte array. 
+		 */
+		int[] ints = new int[bytes.length];
+		for (int i = 0; i < ints.length; i += 1){
+			ints[i] = (int) bytes[i];
+		}
+		return ints;
 		
 	}
 	
@@ -443,44 +344,6 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 	}
 	
 	/**
-	 * Gets the hidden message or image from the given image.
-	 *
-	 * @param encoded File containing the encoded image.
-	 * @param writeTo Location the new File should be written to.
-	 * @param password Key required for decryption.
-	 */
-	
-	public static Bitmap decode(String encoded, String writeTo, String password){
-		
-		/**
-		 * The image containing the hidden message or image.
-		 */
-		Bitmap encodedImage = BitmapFactory.decodeFile(encoded);
-		/* Gets a BufferedImage from the given File. */
-		/**
-		 * Holds the key for decryption.
-		 */
-		byte[] key = new byte[password.length()/2];
-		for(int i = 0; i < 48; i += 2){
-			key[i/2] = (byte) ((Character.digit(password.charAt(i), 16) << 4) + Character.digit(password.charAt(i+1), 16));
-		}
-		/* Gets the byte equivalent of the given password. */
-		/**
-		 * Object for decryption.
-		 */
-		AES anAES = new AES(key);
-		if (checkText(encodedImage)){
-			return decodeText(encodedImage,writeTo,anAES);
-		}
-		/* If an image contains a message, it is decoded as such. */
-		else{
-			return decodeImage(encodedImage,writeTo,anAES);
-		}
-		/* If an image does not contain a message, it is decoded as an image. */
-		
-	}
-	
-	/**
 	 * Returns a boolean representing if a message is encoded in the image.
 	 * 
 	 * @param encodedImage Image to be checked for a hidden message.
@@ -510,12 +373,25 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 	 * Writes message to a text file.
 	 * 
 	 * @param encodedImage Image containing the hidden message.
-	 * @param writeTo Location to write the new file.
-	 * @param anAES Object used for Decryption.
+	 * @param password Object used for encryption.
 	 */
 	
-	public static String decodeText(Bitmap encodedImage,String writeTo,AES anAES){
+	public static String decodeText(String encoded,String password){
 		
+		
+		/**
+		 * The image containing the hidden message or image.
+		 */
+		Bitmap encodedImage = BitmapFactory.decodeFile(encoded);
+		/* Gets a BufferedImage from the given File. */
+		/**
+		 * Holds the key for decryption.
+		 */
+		byte[] key = new byte[password.length()/2];
+		for(int i = 0; i < 48; i += 2){
+			key[i/2] = (byte) ((Character.digit(password.charAt(i), 16) << 4) + Character.digit(password.charAt(i+1), 16));
+		}
+		/* Gets the byte equivalent of the given password. */
 		/**
 		 * Holds the hidden message.
 		 */
@@ -558,17 +434,11 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 						for (int k = 0; k < combinedMessage.length; k +=1 ){
 							combinedMessage[k] = digitsToInt(getPortion(messageNumbers,(3 * k),3 * (k + 1)));
 						}
-						combinedMessage = decryption(combinedMessage,anAES);
+						combinedMessage = convertToInt(AES.decrypt(key,convertToBytes(combinedMessage)));
 						/* Decrypts the integers representing the message. */
 						message = convertToText(combinedMessage);
 						/* Converts the integers representing the hidden message
 						   to a string. */
-						try{
-							return message;
-						}
-						catch (Exception e){
-							System.out.println(e);
-						}
 						return message;
 					}
 					else{
@@ -593,11 +463,24 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 	 * 
 	 * @param encodedImage Image with another image hidden within it.
 	 * @param writeTo Location to write the hidden image to.
-	 * @param anAES Object used for Decryption.
+	 * @param password Object used for Decryption.
 	 */
 	
-	public static Bitmap decodeImage(Bitmap encodedImage,String writeTo,AES anAES){
+	public static Bitmap decodeImage(String encoded,String writeTo,String password){
 		
+		/**
+		 * The image containing the hidden message or image.
+		 */
+		Bitmap encodedImage = BitmapFactory.decodeFile(encoded);
+		/* Gets a BufferedImage from the given File. */
+		/**
+		 * Holds the key for decryption.
+		 */
+		byte[] key = new byte[password.length()/2];
+		for(int i = 0; i < 48; i += 2){
+			key[i/2] = (byte) ((Character.digit(password.charAt(i), 16) << 4) + Character.digit(password.charAt(i+1), 16));
+		}
+		/* Gets the byte equivalent of the given password. */
 		/**
 		 * Width of the image with the hidden image within it.
 		 */
@@ -645,7 +528,7 @@ public static Bitmap encodeText(String original,String writeTo,String message,AE
 					/* Gets the number hidden in the current pixel. */
 					if (pixelInt == 423){
 						/* Occurs when the end code is found. */
-						hiddenPixels = decryption(hiddenPixels,anAES);
+						hiddenPixels = convertToInt(AES.decrypt(key,convertToBytes(hiddenPixels)));
 						/* Decrypts the numbers representing hidden image. */
 						return rebuildImage(hiddenPixels,hiddenWidth,hiddenHeight,writeTo);
 						/* Recreates the hidden image. */

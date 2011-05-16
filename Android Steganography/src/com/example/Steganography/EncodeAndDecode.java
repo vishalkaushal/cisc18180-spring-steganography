@@ -685,6 +685,7 @@ public static TwoReturn encodeText(String original,String writeTo,String message
 				   image. */
 			}
 		}
+		original.recycle();
 		return Bitmap.createBitmap(color,scaleFactor * original.getWidth(),scaleFactor * original.getHeight(),Bitmap.Config.RGB_565);
 		
 	}

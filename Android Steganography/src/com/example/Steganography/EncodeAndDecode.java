@@ -786,7 +786,7 @@ public static TwoReturn encodeText(String original,String writeTo,String message
 		   number as the last digit of the red component
 		   of the pixel. */
 		
-		return Color.rgb(digitsToInt(red),digitsToInt(green),
+		return Color.argb(Color.alpha(currentColor),digitsToInt(red),digitsToInt(green),
 				digitsToInt(blue));
 		
 	}

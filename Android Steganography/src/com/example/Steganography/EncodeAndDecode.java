@@ -31,15 +31,15 @@ public static TwoReturn encodeText(String original,String writeTo,String message
 		/**
 		 * Indicates how much the encoded image must be scaled up.
 		 */
-		//int scaleFactor = 1;
-		/*while((message.length() + 2) > (scaleFactor * scaleFactor * encodedImage.getHeight() * encodedImage.getWidth())){
+		int scaleFactor = 1;
+		while((message.length() + 2) > (scaleFactor * scaleFactor * encodedImage.getHeight() * encodedImage.getWidth())){
 			scaleFactor += 1;
 		}
 		/* Determines the scaleFactor needed to fit all the
 		   information from the message into the image.
 		   i.e. the image must have enough pixels to fit the
 		   message, the start code, and the end code. */
-		//encodedImage = scaleUp(encodedImage,scaleFactor);
+		encodedImage = scaleUp(encodedImage,scaleFactor);
 		/**
 		 * Width of the encoded image.
 		 */
@@ -58,7 +58,7 @@ public static TwoReturn encodeText(String original,String writeTo,String message
 		}
 		byte[] key = AES.generateKey();
 		/* Converts each message character to an integer. */
-		messageData = convertToInt(AES.encrypt(key,convertToBytes(messageData)));
+		//messageData = convertToInt(AES.encrypt(key,convertToBytes(messageData)));
 		/* Encrypts the message. */
 		for (int j = 0; j < width; j+= 1){
 			/* Controls movement through the image 

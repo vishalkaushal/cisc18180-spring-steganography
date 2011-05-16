@@ -108,7 +108,7 @@ public class PictureTab extends Activity{
 			alertDialog.setMessage("Done!");
 			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
 			      public void onClick(DialogInterface dialog, int which) {
-			    	 // alertDialog.dismiss();
+			    	 //alertDialog.dismiss();
 			    } });
 			alertDialog.show();
 		}

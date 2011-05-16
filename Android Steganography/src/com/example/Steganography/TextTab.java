@@ -110,7 +110,6 @@ public class TextTab extends Activity{
 				get = EncodeAndDecode.encodeText(textTargetUri.getText().toString(), writeTo, editText.getText().toString());
 				//key = (byte[]) get.second;
 				image = (Bitmap) get.first;
-				imageView.setImageBitmap(image);
 			}
 			else if (radioGroup.getCheckedRadioButtonId() == 1){
 				message = EncodeAndDecode.decodeText(textTargetUri.getText().toString(), editText2.getText().toString());
@@ -119,8 +118,9 @@ public class TextTab extends Activity{
 		}
 		protected void onPostExecute(Void useless){
 			pd.dismiss();
+			imageView.setImageBitmap(image);
 			final AlertDialog alertDialog = new AlertDialog.Builder(TextTab.this).create();
-			alertDialog.setMessage("" + image.isMutable());
+			alertDialog.setMessage("Done");
 			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
 			      public void onClick(DialogInterface dialog, int which) {
 			    	 // alertDialog.dismiss();
